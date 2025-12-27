@@ -28,7 +28,7 @@ Identified a "Not Acknowledged" (NACK) error during initial LCD deployment.
 
 ## 4. Development History (Phase 1 Archive)
 * **Objective:** Establish a stable communication bridge between UART input and mechanical actuation.
-* **Mechanical Integration:** Engineered a temporary linkage using a screwdriver as a makeshift deadbolt to verify SG90 torque limits (0° to 90°).
+* **Mechanical Integration:** Verified the 90° rotational range of the MG90S servo horn to ensure correct mapping of PWM signals for the lock/unlock states.
 * **Logic:** Implemented a conditional state machine for PIN verification via UART (115200 Baud).
 
 ## 5. Repository Structure

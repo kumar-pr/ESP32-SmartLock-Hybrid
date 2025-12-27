@@ -33,7 +33,7 @@ Identified a "Not Acknowledged" (NACK) error during initial LCD deployment.
 
 ## 5. Repository Structure
 * **`SecureLock_V1_Serial.ino`**: UART-based authentication logic.
-* **`SecureLock_V2_RFID.ino`**: Current stable build with SPI RFID and multi-UID support.
+* **`SecureLock_V2.ino`**: Current stable build with SPI RFID and multi-UID support.
 
 ## 6. Future Roadmap
 * **Phase 3 (Security Hardening):** Implementation of "Lockout" logic to prevent brute-force attacks.

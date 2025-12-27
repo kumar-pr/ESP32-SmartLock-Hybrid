@@ -1,34 +1,40 @@
-# ESP32 Smart Lock System: Phase 1
-**Project Status:** Functional Prototype / Hardware-in-the-Loop (HIL) Testing
+# Multi-Factor Secure Access Control (Phase 2)
+**Project Status:** Functional Prototype / Hardware-in-the-Loop (HIL) Testing 
+**Current Build:** RFID (SPI) + Virtual Keypad (UART) + Servo Actuation
 
 ## 1. Project Overview
-This repository contains the firmware and system architecture for a secure locking mechanism based on the ESP32 platform. The primary objective of Phase 1 was to establish a stable communication bridge between user input, visual feedback, and mechanical actuation.
+This repository documents the evolution of an ESP32-based security system. It has transitioned from a software-simulated keypad to a hardware-integrated system utilizing **RFID (Radio Frequency Identification)** and **PWM-controlled actuation**.
 
-## 2. System Architecture
-The system integrates three core subsystems to achieve secure authentication and physical state change:
+## 2. Phase 2 System Architecture (Current)
+The ESP32 manages three concurrent communication protocols to interface with peripherals:
 
-* **Logic & Processing:** ESP32 (Xtensa® Dual-Core 32-bit LX6).
-* **User Interface (Visual):** 16x2 Liquid Crystal Display via I2C protocol (Inter-Integrated Circuit).
-* **Actuation:** High-torque SG90 Servo controlled via Pulse Width Modulation (PWM).
-* **Virtual Input Layer:** UART Serial communication (115200 Baud) utilized to simulate keypad input during hardware resource constraints.
+| Peripheral | Protocol | GPIO Pins | Purpose |
+| :--- | :--- | :--- | :--- |
+| **MFRC522 RFID** | **SPI** | **5, 18, 19, 23, 15** | Token authentication |
+| **16x2 LCD** | **I2C** | **21, 22** | Real-time User Feedback |
+| **MG90S Servo** | **PWM** | **4** | Mechanical Actuation |
 
-## 3. Technical Implementation
-### 3.1 I2C Bus Management
-During initial deployment, a "Not Acknowledged" (NACK) error was detected on the I2C bus.
-* **Diagnosis:** Execution of an I2C address scanner script to verify slave device presence.
-* **Resolution:** Identified the slave device address at `0x27` and verified physical signal integrity.
 
-### 3.2 Mechanical Integration
-To test the torque and rotation limits of the MG90S servo, a temporary mechanical linkage was engineered using a screwdriver as a makeshift deadbolt. This allowed for the verification of the "Locked" vs. "Unlocked" angular positions (0° to 90°).
 
-## 4. Firmware Logic
-The firmware utilizes a conditional state machine to handle PIN verification:
-1. **Idle State:** System polls for UART Serial data from the host PC.
-2. **Buffer Processing:** Received string is trimmed of whitespace and compared against the `secretPIN` constant.
-3. **Authentication State:**
-    * **Success:** Triggers a 90° PWM signal to the servo and updates the I2C display.
-    * **Failure:** Rejects input, updates display with error message, and logs the event to Serial.
+## 3. Engineering Challenges & Debugging
+### 3.1 SPI Signal Integrity (Phase 2)
+During RFID integration, the system initially returned `Chip Software Version: 0x0` or `0xB2`.
+* **Diagnosis:** High-speed SPI data lines (MISO/MOSI) were dropping bits due to loose friction-fit jumper connections.
+* **Resolution:** Implemented physical terminal tensioning (wedge-and-tape method) to stabilize contact, achieving a stable **Version 0x92** read.
 
-## 5. Future Development (Roadmap)
-* **Phase 2:** Integration of a 4x4 matrix membrane keypad for standalone physical operation.
-* **Phase 3:** Implementation of security "Lockout" logic to prevent brute-force attacks after three failed attempts.
+### 3.2 I2C Bus Management (Phase 1 Archive)
+Identified a "Not Acknowledged" (NACK) error during initial LCD deployment.
+* **Resolution:** Utilized an I2C scanner script to identify slave address `0x27`.
+
+## 4. Development History (Phase 1 Archive)
+* **Objective:** Establish a stable communication bridge between UART input and mechanical actuation.
+* **Mechanical Integration:** Engineered a temporary linkage using a screwdriver as a makeshift deadbolt to verify SG90 torque limits (0° to 90°).
+* **Logic:** Implemented a conditional state machine for PIN verification via UART (115200 Baud).
+
+## 5. Repository Structure
+* **`SecureLock_V1_Serial.ino`**: UART-based authentication logic.
+* **`SecureLock_V2_RFID.ino`**: Current stable build with SPI RFID and multi-UID support.
+
+## 6. Future Roadmap
+* **Phase 3 (Security Hardening):** Implementation of "Lockout" logic to prevent brute-force attacks.
+* **Data Persistence:** Using **EEPROM** to save system states even after power loss.

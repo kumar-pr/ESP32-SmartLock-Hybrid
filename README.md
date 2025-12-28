@@ -38,3 +38,10 @@ Identified a "Not Acknowledged" (NACK) error during initial LCD deployment.
 ## 6. Future Roadmap
 * **Phase 3 (Security Hardening):** Implementation of "Lockout" logic to prevent brute-force attacks.
 * **Data Persistence:** Using **EEPROM** to save system states even after power loss.
+
+
+---
+
+⚠️ Status Update (Dec 2025): Hardware logic (V3) is finalized. Physical demonstration of RFID persistence is pending a soldered module to resolve intermittent SPI signal loss.
+
+---
